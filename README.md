@@ -23,3 +23,6 @@ such things as adding a ship onto the board, or firing a missile.
 
 There is also a suite of test modules based on the unittest paradigm.
 Each test module corresponds to one of the above three classes.
+
+Have added a few methods to 'battleship.py' to simulate the computer 
+playing the game until it wins.
