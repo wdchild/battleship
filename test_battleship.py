@@ -4,7 +4,7 @@ from ship import *
 
 class BattleShipTestCase(unittest.TestCase):
 
-	'''def test_A_empty_grid(self):
+	def test_A_empty_grid(self):
 		rows = 2
 		cols = 4
 		bs = BattleShip(rows, cols)
@@ -80,9 +80,9 @@ class BattleShipTestCase(unittest.TestCase):
 		bs.place_ship(s1)
 		bs.show_board_with_ships()
 		print(bs.random_shot())
-		print(bs.fire_missile('A1'))'''
+		print(bs.fire_missile('A1'))
 
-	'''def test_G_play_to_sink(self):
+	def test_G_play_to_sink(self):
 		rows, cols = 5, 5
 		bs = BattleShip(rows, cols)
 		s1 = Ship.create_ship('carrier', 'A1', 'SN')
@@ -101,22 +101,22 @@ class BattleShipTestCase(unittest.TestCase):
 		pos_s = bs.move((1, 1), 'south')
 		pos_e = bs.move((1, 1), 'east')
 		pos_w = bs.move((1, 1), 'west')
-		print(pos_n, pos_s, pos_e, pos_w)'''
+		print(pos_n, pos_s, pos_e, pos_w)
 
-	''' def test_I_target_shot(self):
+	def test_I_target_shot(self):
 		rows, cols = 5, 5
 		bs = BattleShip(rows, cols)	
 		s1 = Ship.create_ship('carrier', 'A1', 'SN')
 		bs.place_ship(s1)
 		shot_result = bs.fire_missile('C1')
-		bs.target_shots(shot_result)'''
+		bs.target_shots(shot_result)
 
-	'''def test_J_play_to_sink(self):
+	def test_J_play_to_sink(self):
 		rows, cols = 5, 5
 		bs = BattleShip(rows, cols)	
 		s1 = Ship.create_ship('carrier', 'A1', 'SN')
 		bs.place_ship(s1)
-		bs.play_to_sink()'''
+		bs.play_to_sink()
 
 	def test_H_play_to_win(self):
 		rows, cols = 5, 5
