@@ -92,10 +92,12 @@ class Board():
 	def trans_to_board_coords(self, coordinate):
 		x = coordinate[0] # row
 		y = coordinate[1] # col
-		if x < 0 or x >= self.width:
-			raise ValueError('Horizontal coordinate invalid. Try again.')
-		if y < 0 or y >= self.height:
-			raise ValueError('Vertical coordinate invalid. Try again.')
+		if x < 0 or x > self.width-1:
+			print('Off board left or right.')
+			# raise ValueError('Horizontal coordinate invalid. Try again.')
+		if y < 0 or y > self.height-1:
+			print('Off board top or bottom.')
+			# raise ValueError('Vertical coordinate invalid. Try again.')
 		row = Board.possible_rows[y]
 		col = str(x + 1)
 		board_coord = row + col

@@ -4,7 +4,7 @@ from ship import *
 
 class BattleShipTestCase(unittest.TestCase):
 
-	def test_A_empty_grid(self):
+	'''def test_A_empty_grid(self):
 		rows = 2
 		cols = 4
 		bs = BattleShip(rows, cols)
@@ -61,16 +61,72 @@ class BattleShipTestCase(unittest.TestCase):
 		s1 = Ship.create_ship('carrier', 'A1', 'SN')
 		bs.place_ship(s1)
 		bs.show_board_with_ships()
-		bs.fire_missile('A1')
+		print(bs.fire_missile('A2'))
+		print(bs.fire_missile('A1'))
 		bs.show_board_with_ships()
-		bs.fire_missile('B1')
+		print(bs.fire_missile('B1'))
 		bs.show_board_with_ships()
-		bs.fire_missile('C1')
+		print(bs.fire_missile('C1'))
 		bs.show_board_with_ships()
-		bs.fire_missile('D1')
+		print(bs.fire_missile('D1'))
 		bs.show_board_with_ships()
-		bs.fire_missile('E1')
+		print(bs.fire_missile('E1'))
 		bs.show_board_with_ships() # game won at this point
+
+	def test_F_random_shots(self):
+		rows, cols = 5, 5
+		bs = BattleShip(rows, cols)
+		s1 = Ship.create_ship('carrier', 'A1', 'SN')
+		bs.place_ship(s1)
+		bs.show_board_with_ships()
+		print(bs.random_shot())
+		print(bs.fire_missile('A1'))'''
+
+	'''def test_G_play_to_sink(self):
+		rows, cols = 5, 5
+		bs = BattleShip(rows, cols)
+		s1 = Ship.create_ship('carrier', 'A1', 'SN')
+		bs.place_ship(s1)
+		result = 'continue'
+		while result != 'hit':
+			shot_result = bs.random_shot()
+			result = shot_result[0]
+			shot_xy = shot_result[1]
+		print('Hit with shot at {}'.format(shot_xy))
+
+	def test_H_move(self):
+		rows, cols = 5, 5
+		bs = BattleShip(rows, cols)
+		pos_n = bs.move((1, 1), 'north')
+		pos_s = bs.move((1, 1), 'south')
+		pos_e = bs.move((1, 1), 'east')
+		pos_w = bs.move((1, 1), 'west')
+		print(pos_n, pos_s, pos_e, pos_w)'''
+
+	''' def test_I_target_shot(self):
+		rows, cols = 5, 5
+		bs = BattleShip(rows, cols)	
+		s1 = Ship.create_ship('carrier', 'A1', 'SN')
+		bs.place_ship(s1)
+		shot_result = bs.fire_missile('C1')
+		bs.target_shots(shot_result)'''
+
+	'''def test_J_play_to_sink(self):
+		rows, cols = 5, 5
+		bs = BattleShip(rows, cols)	
+		s1 = Ship.create_ship('carrier', 'A1', 'SN')
+		bs.place_ship(s1)
+		bs.play_to_sink()'''
+
+	def test_H_play_to_win(self):
+		rows, cols = 5, 5
+		bs = BattleShip(rows, cols)	
+		s1 = Ship.create_ship('carrier', 'A1', 'SN')
+		bs.place_ship(s1)
+		bs.play_to_win()
+
+
 
 if __name__ == '__main__':
 	unittest.main()
+

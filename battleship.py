@@ -1,5 +1,6 @@
 from ship import *
 from board import *
+import random
 
 ''' This is the class the essentially manages the game. It draws on the
 	Ship and Board classes for functionality. If you were developing this
@@ -154,10 +155,107 @@ class BattleShip():
 				return False
 		return True
 
+	def play_to_win(self):
+		shot_result = self.random_shot()
+		result = shot_result[0]
+		print('in play_to_win shot_result {} result {}'.format(shot_result, result))
+		count = 0
+		while(result != 'win' and count < 3):
+			result = self.play_to_sink()
+			count += 1
+
+	def play_to_sink(self):
+		# first take a random shot
+		shot_result = self.random_shot()
+		result = shot_result[0] # hit, already taken, miss, etc.
+		shot_xy = shot_result[1] # coordinates 
+		print(shot_result)
+		print(result, str(shot_xy))
+		
+		# while not sunk
+		while(result != 'hit'):
+			# continue random shots
+			shot_result = self.random_shot()
+			result = shot_result[0]
+			print('in play_to_sink while, shot_result {} result {}'.format(shot_result, result))
+		# will break out with a 'hit'
+
+		# do targeted shooting until sunk (whiles are inside the method)
+		# target_shots should return a "sink" method
+		shot_result = self.target_shots(shot_result)
+		print('target_shots returned {}'.format(shot_result))
+		result = shot_result[0]
+
+		return result # either 'hit' or 'win'
+
+	def target_shots(self, shot_result):
+		result = 'continue'
+		print('in target shots shot_result is {}'.format(shot_result))
+		xy = shot_result[1]
+		print('xy is {}'.format(xy))
+
+		# will continue north until miss or end of board or sunk
+		while (result != 'sunk' and result != 'win' \
+			   and xy[1] > 0 and result != 'miss'):
+			xy = self.move(xy, 'north')
+			board_pos = self.trans_to_board_coords(xy)
+			shot_result = self.fire_missile(board_pos)
+			result = shot_result[0]
+
+		# if sunk going north, will not enter
+		while (result != 'sunk' and result != 'win' \
+			   and xy[1] < self.lower_boundary and result != 'miss'):
+			xy = self.move(xy, 'south')
+			board_pos = self.trans_to_board_coords(xy)
+			shot_result = self.fire_missile(board_pos)
+			result = shot_result[0]
+
+		# if sunk going north or south, will not enter
+		while (result != 'sunk' and result != 'win' \
+			   and xy[0] < self.right_boundary and result != 'miss'):
+			xy = self.move(xy, 'east')
+			board_pos = self.trans_to_board_coords(xy)
+			shot_result = self.fire_missile(board_pos)
+			result = shot_result[0]
+
+		# if sunk going north or south or east, will not enter
+		while (result != 'sunk' and result != 'win' \
+			   and xy[0] > 0 and result != 'miss'):
+			xy = self.move(xy, 'west')
+			board_pos = self.trans_to_board_coords(xy)
+			shot_result = self.fire_missile(board_pos)
+			result = shot_result[0]
+
+		print('from target_shots returning {}'.format(shot_result))
+		return shot_result
+
+	def move(self, xy, direction):
+		if direction == 'north':
+			xy = (xy[0], xy[1] - 1)
+		if direction == 'south':
+			xy = (xy[0], xy[1] + 1)
+		if direction == 'east':
+			xy = (xy[0] + 1, xy[1])
+		if direction == 'west':
+			xy = (xy[0] - 1, xy[1])
+		print('Moving {} to {}'.format(direction, xy))
+		return xy
+
+	def random_shot(self):
+		x = random.randint(0, self.lower_boundary) # get function
+		y = random.randint(0, self.right_boundary)
+		xy = (x, y)
+		bp = self.trans_to_board_coords(xy)
+		shot_result = self.fire_missile(bp)
+		print('random shot result is {}'.format(shot_result))
+		return shot_result
+
 	''' Now for the fun part: firing missiles!
 		If it's a hit, then you check if boat is sunk.
 		And if it's sunk, then you check for a win.'''
+
 	def fire_missile(self, board_position):
+		result = 'continue'
 		xy = self.trans_to_python_coords(board_position)
 		col = xy[0]
 		row = xy[1]
@@ -167,10 +265,20 @@ class BattleShip():
 			raise ValueError('Invalid vertical missile board_position!')
 
 		if self.board.grid[row][col] == '.': # open seas
+			result = 'miss'
 			print('{} is a miss!'.format(board_position))
 			self.board.grid[row][col] = BattleShip.hit_codes['miss']
+			return (result, xy)
 
-		elif self.board.grid[row][col] in BattleShip.ship_codes.values(): # ship hit
+		if self.board.grid[row][col] in BattleShip.hit_codes.values(): # previously shot at
+			print('{} is already taken!'.format(board_position))
+			result = 'taken'
+			# ACTUALLY, YOU SHOULD KEEP TRACK OF SHOT POSITIONS SO YOU DON'T
+			# TRY TO SHOOT THEM TWICE (AVOID BACKTRACKING), COULD STORE IN DICTIONARY
+			return (result, xy)
+
+		if self.board.grid[row][col] in BattleShip.ship_codes.values(): # ship hit
+			result = 'hit'
 			print('{} is a hit!'.format(board_position))
 			this_ship = self.id_ship_by_pos(xy)
 			# print('You hit a {}'.format(this_ship.type))
@@ -185,14 +293,16 @@ class BattleShip():
 			status = this_ship.status()
 			# print(status)
 			if status == 'sunk':
+				result = 'sunk'
 				print('You sank a {}'.format(this_ship.type))
 				# since you sank it, need to see if all ships are sunk
 				fleet_status = self.check_fleet_status()
 				if fleet_status == 'destroyed':
+					result = 'win'
 					print('You won!')
+					
+			return (result, xy)
 
-		elif self.board.grid[row][col] in BattleShip.hit_codes.values(): # previously shot at
-			print('{} is already taken!'.format(board_position))
 
 	def id_ship_by_pos(self, coordinate):
 		for ship in BattleShip.ships:
@@ -210,6 +320,7 @@ class BattleShip():
 			if ship.status() == 'afloat':
 				fleet_status = 'still alive'
 		return fleet_status
+
 
 if __name__ == '__main__':
 	# test basic board
